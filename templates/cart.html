@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+</head>
+<body>
+    <h1>Your Cart</h1>
+    <div>
+        <h2>{{ product[1] }}</h2>  <!-- Product Name -->
+        <p>Price: ${{ product[2] }}</p>  <!-- Product Price -->
+        <img src="{{ product[3] }}" alt="{{ product[1] }}" width="200">  <!-- Product Image -->
+        
+        <form action="{{ url_for('checkout') }}" method="POST">
+            <input type="hidden" name="product_name" value="{{ product[1] }}">
+            <input type="text" name="customer_name" placeholder="Enter your name" required><br>
+            <input type="email" name="customer_email" placeholder="Enter your email" required><br>
+            <input type="text" name="customer_address" placeholder="Enter your address" required><br>
+            <input type="text" name="customer_phone" placeholder="Enter your phone number" required><br>
+            <button type="submit">Proceed to Checkout</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmed</title>
+</head>
+<body>
+    <h1>Order Confirmed!</h1>
+    <p>Thank you for your order, {{ order.customer_name }}!</p>
+    <h3>Order Details:</h3>
+    <ul>
+        <li>Order ID: {{ order.id }}</li>
+        <li>Product Name: {{ order.product_name }}</li>
+        <li>Total Price: {{ order.total_price }}</li>
+    </ul>
+    <p>We will deliver your order to:</p>
+    <p>{{ order.customer_address }}</p>
+</body>
+</html>

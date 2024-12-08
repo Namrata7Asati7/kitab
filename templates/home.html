@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Store</title>
+</head>
+<body>
+    <h1>Welcome to the Product Store</h1>
+    <div>
+        {% for product in products %}
+        <div>
+            <h2>{{ product[1] }}</h2>  <!-- Assuming product[1] is the name -->
+            <p>Price: ${{ product[2] }}</p> <!-- Assuming product[2] is the price -->
+            <img src="{{ product[3] }}" alt="{{ product[1] }}" width="200"> <!-- Assuming product[3] is the image URL -->
+            <a href="{{ url_for('cart', product_name=product[1]) }}">Add to Cart</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
