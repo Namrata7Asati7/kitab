@@ -5,14 +5,35 @@
 </head>
 <body>
     <h1>Order Confirmed!</h1>
-    <p>Thank you for your order, {{ order.customer_name }}!</p>
-    <h3>Order Details:</h3>
-    <ul>
-        <li>Order ID: {{ order.id }}</li>
-        <li>Product Name: {{ order.product_name }}</li>
-        <li>Total Price: {{ order.total_price }}</li>
-    </ul>
-    <p>We will deliver your order to:</p>
-    <p>{{ order.customer_address }}</p>
+  
+    <div class="container">
+        <h2 class="text-center my-5">Order Confirmation</h2>
+
+        <div class="order-details">
+            <h4>Thank you for your order, {{ order.customer_name }}!</h4>
+            <p>Your order has been successfully placed and will be processed shortly.</p>
+
+            <div class="order-summary">
+                <h5>Order Summary</h5>
+                <ul>
+                    <li><strong>Product Name:</strong> {{ order.product_name }}</li>
+                    <li><strong>Customer Name:</strong> {{ order.customer_name }}</li>
+                    <li><strong>Email:</strong> {{ order.customer_email }}</li>
+                    <li><strong>Address:</strong> {{ order.customer_address }}</li>
+                    <li><strong>Phone:</strong> {{ order.customer_phone }}</li>
+                    <li><strong>Total Price:</strong> ${{ order.total_price }}</li>
+                </ul>
+            </div>
+
+            <p class="text-center mt-4">Your order will be delivered to the address provided.</p>
+            <p class="text-center">For any inquiries, please contact us at support@example.com.</p>
+
+            <div class="text-center mt-5">
+                <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+ 
 </body>
 </html>

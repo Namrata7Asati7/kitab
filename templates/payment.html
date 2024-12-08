@@ -7,14 +7,16 @@
     <h1>Payment for {{ product_name }}</h1>
 
     <!-- Payment Method Selection -->
-    <form action="{{ url_for('checkout') }}" method="POST">
-        <input type="hidden" name="product_name" value="{{ product_name }}">
-        
-        <label for="payment_method">Choose a Payment Method:</label><br>
-        <input type="radio" name="payment_method" value="COD" required> Cash on Delivery<br>
-        <input type="radio" name="payment_method" value="UPI" required> UPI<br>
-
-        <button type="submit">Confirm Payment</button>
+    <form method="POST">
+        <label for="payment_method">Select Payment Method:</label>
+        <select name="payment_method" id="payment_method" required>
+            <option value="Credit Card">Credit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Debit Card">Debit Card</option>
+        </select>
+        <br><br>
+        <button type="submit">Proceed to Payment</button>
     </form>
+    
 </body>
 </html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+    <form action="{{ url_for('payment', product_name=request.form['product_name']) }}" method="POST">
+        <h2>Select Payment Method</h2>
+        <label>
+            <input type="radio" name="payment_method" value="cod" required> Cash on Delivery
+        </label><br>
+        <label>
+            <input type="radio" name="payment_method" value="upi" required> UPI
+        </label><br>
+        <button type="submit">Confirm Payment</button>
+    </form>
+</body>
+</html>

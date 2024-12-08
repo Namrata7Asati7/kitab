@@ -25,9 +25,14 @@ def get_db_connection():
     except Exception as e:
         print(f"Unable to connect to the database: {e}")
         return None
+    
+@app.route('/')
+def welcome():
+    return render_template('welcome.html')
+
 
 # Home Route - Displays all products
-@app.route('/')
+@app.route('/home')
 def home():
     products = get_products()  # Fetch all products from the database
     return render_template('home.html', products=products)
@@ -41,87 +46,36 @@ def cart(product_name):
         return redirect(url_for('home'))
     return render_template('cart.html', product=product)  # Render cart page with product details
 
-# Checkout Route - Displays the checkout form
-@app.route('/checkout', methods=['POST'])
-def checkout():
-    product_name = request.form['product_name']
-    customer_name = request.form['customer_name']
-    customer_email = request.form['customer_email']
-    customer_address = request.form['customer_address']
-    customer_phone = request.form['customer_phone']
-
-    # Mock payment validation (replace with payment gateway integration)
-    payment_successful = True  # Set this to `False` to simulate payment failure
-
-    if payment_successful:
-        try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-
-            # Add order to the database
-            cursor.execute("SELECT price FROM products WHERE name = %s", (product_name,))
-            product = cursor.fetchone()
-            if product:
-                total_price = product[0]
-                cursor.execute("""
-                    INSERT INTO orders (product_name, customer_name, customer_email, customer_address, customer_phone, total_price)
-                    VALUES (%s, %s, %s, %s, %s, %s) RETURNING id
-                """, (product_name, customer_name, customer_email, customer_address, customer_phone, total_price))
-                order_id = cursor.fetchone()[0]
-                conn.commit()
-
-                # Send Order Confirmation Email
-                msg = Message('Order Confirmation', sender=app.config['MAIL_USERNAME'], recipients=[customer_email])
-                msg.body = f"""
-                Dear {customer_name},
-
-                Thank you for your order! Here are your order details:
-                - Product: {product_name}
-                - Total Price: {total_price}
-
-                Your order will be delivered to:
-                {customer_address}
-
-                For inquiries, contact us at support@example.com.
-
-                Thank you for shopping with us!
-                """
-                mail.send(msg)
-
-                # Redirect to Order Confirmation Page
-                return redirect(url_for('order_confirmed', order_id=order_id))
-            else:
-                flash("Product not found. Order not placed.", "danger")
-        except Exception as e:
-            flash(f"Database error: {str(e)}", "danger")
-        finally:
-            conn.close()
-    else:
-        flash("Payment failed. Order not placed.", "danger")
-    return redirect(url_for('home'))
+# Proceed to Payment Route - Displays payment page after adding product to cart
+@app.route('/proceed_to_payment/<string:product_name>', methods=['POST'])
+def proceed_to_payment(product_name):
+    return redirect(url_for('payment', product_name=product_name))
 
 # Payment Route - User selects a payment method
 @app.route('/payment/<string:product_name>', methods=['GET', 'POST'])
 def payment(product_name):
     if request.method == 'POST':
-        payment_method = request.form['payment_method']  # Retrieve selected payment method
+        # Check if 'payment_method' is in the form
+        payment_method = request.form.get('payment_method')
         
-        # Here, we assume successful payment; in a real scenario, payment integration would occur
-        flash(f"Payment via {payment_method} successful!", "success")
-        
-        # After successful payment, return to the home page
-        return redirect(url_for('home'))
+        if not payment_method:
+            flash("Please select a payment method.", "danger")
+            return redirect(url_for('payment', product_name=product_name))
+
+        # Process payment (this is a mock in this case)
+        payment_successful = True  # Assume payment is successful
+
+        if payment_successful:
+            flash(f"Payment via {payment_method} successful!", "success")
+            return redirect(url_for('home'))  # Redirect to home after successful payment
+        else:
+            flash("Payment failed. Please try again.", "danger")
+            return redirect(url_for('payment', product_name=product_name))
 
     return render_template('payment.html', product_name=product_name)
 
-# Email Configuration
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Your email
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Your email password
-mail = Mail(app)
 
+# Order Confirmation Route - Display the order confirmation details
 @app.route('/order-confirmed/<int:order_id>', methods=['GET'])
 def order_confirmed(order_id):
     conn = get_db_connection()
